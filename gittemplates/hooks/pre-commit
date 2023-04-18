@@ -40,7 +40,7 @@ fi
 
 #unit test (whole project) and check result 
 echo "(go test)" 
-go test ./... - race -count 1
+go test ./... -race -count 1
 returnCode=$?
 
 if [ SreturnCode -ne 0 ]; then 
