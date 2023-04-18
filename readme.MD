@@ -20,7 +20,7 @@ githooks are present to safeguard non-building commits.
 Read more about [githooks](https://www.atlassian.com/git/tutorials/git-hooks)
 
 
-to use the githooks, run these commands inside the repo folder: 
+If you wish to use the githooks, run these commands inside the cloned repo folder: 
 ```
 cd .git/hooks
 rm pre-commit
