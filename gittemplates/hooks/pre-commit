@@ -1,0 +1,49 @@
+#!/bin/sh
+go_format() {
+  for file in $(git diff --cached --name-only --diff-filter=ACMRTUXB | grep "\.go$")
+  do 
+    echo "(gofmt) $file"
+    gofmt -w $file 
+    git add "$file"
+  done
+}
+
+go_vet() {
+  echo "(go vet)"
+  errors=
+  if ! go vet ./... 2>&1; 
+    then errors=YES
+  #go vet needs whole project otherwise it will not understand variables declared in separate files
+  fi
+
+  #test for errors 
+  if [ -n "$errors" ]; then
+    echo
+    echo "Please fix the go vet warnings above."
+    exit 1 
+  fi
+}
+
+go_format
+go_vet
+
+#build (whole project) and check result
+echo "(go build)" 
+go build ./... 
+returnCode=$?
+
+if [ $returnCode -ne 0 ]; then
+  echo "build failed."
+  exit 1 
+fi
+
+
+#unit test (whole project) and check result 
+echo "(go test)" 
+go test ./... - race -count 1
+returnCode=$?
+
+if [ SreturnCode -ne 0 ]; then 
+  echo "unit tests failed."
+  exit 1 
+fi
